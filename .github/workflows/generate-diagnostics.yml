@@ -1,0 +1,45 @@
+name: Generate diagnostics
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch or commit to build
+        required: true
+        default: feat/buddy-allocator-139
+      module:
+        description: Module passed to build.py
+        required: true
+        default: frailbox
+
+jobs:
+  diagnostics:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout target ref
+        uses: actions/checkout@v4
+        with:
+          repository: Votienduong2208/TentOfTrials
+          ref: ${{ inputs.ref }}
+          fetch-depth: 0
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Run diagnostics
+        run: python3 build.py -m "${{ inputs.module }}"
+        continue-on-error: true
+
+      - name: List diagnostics
+        run: find diagnostic -maxdepth 1 -type f -printf '%p %s bytes\n' | sort || true
+
+      - name: Upload diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: diagnostics-${{ inputs.ref }}-${{ github.run_id }}
+          path: diagnostic/build-*
+          if-no-files-found: error
