@@ -272,6 +272,7 @@ void *buddy_allocator_alloc(buddy_allocator_t *allocator, size_t size) {
 void buddy_allocator_free(buddy_allocator_t *allocator, void *ptr) {
     buddy_prefix_t *prefix;
     buddy_block_t *block;
+    size_t requested_size;
 
     if (!allocator || !ptr) {
         return;
@@ -283,13 +284,17 @@ void buddy_allocator_free(buddy_allocator_t *allocator, void *ptr) {
     }
 
     block = prefix->block;
-    if (block->magic != BUDDY_MAGIC) {
+    if (block->magic != BUDDY_MAGIC || block->is_free) {
         return;
     }
 
-    allocator->stats.total_freed += prefix->requested_size;
-    if (allocator->stats.current_usage >= prefix->requested_size) {
-        allocator->stats.current_usage -= prefix->requested_size;
+    requested_size = prefix->requested_size;
+    prefix->magic = 0;
+    prefix->block = NULL;
+
+    allocator->stats.total_freed += requested_size;
+    if (allocator->stats.current_usage >= requested_size) {
+        allocator->stats.current_usage -= requested_size;
     } else {
         allocator->stats.current_usage = 0;
     }

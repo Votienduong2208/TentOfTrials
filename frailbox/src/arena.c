@@ -285,8 +285,8 @@ int arena_contains(const arena_t *arena, const void *ptr) {
             return 1;
         }
 #else
-        if (ptr >= region->start &&
-            ptr < (char *)region->start + region->size) {
+        if ((const char *)ptr >= (const char *)region->start &&
+            (const char *)ptr < (const char *)region->start + region->size) {
             return 1;
         }
 #endif

@@ -65,11 +65,32 @@ static int test_context_allocator(void) {
     return failures == 0 ? 0 : 1;
 }
 
+static int test_double_free_is_ignored(void) {
+    buddy_allocator_t allocator;
+    void *ptr;
+    buddy_stats_t stats;
+
+    ASSERT_TRUE(buddy_allocator_init(&allocator, 4096, 0) == 0, "buddy_allocator_init should succeed");
+    ptr = buddy_allocator_alloc(&allocator, 128);
+    ASSERT_TRUE(ptr != NULL, "allocation should succeed");
+
+    buddy_allocator_free(&allocator, ptr);
+    buddy_allocator_free(&allocator, ptr);
+
+    stats = buddy_allocator_stats(&allocator);
+    ASSERT_TRUE(stats.current_usage == 0, "double free should not underflow current_usage");
+    ASSERT_TRUE(stats.deallocation_count == 1, "double free should not count as a second deallocation");
+
+    buddy_allocator_destroy(&allocator);
+    return failures == 0 ? 0 : 1;
+}
+
 int main(void) {
     int rc = 0;
 
     rc |= test_global_allocator();
     rc |= test_context_allocator();
+    rc |= test_double_free_is_ignored();
 
     if (failures == 0) {
         printf("buddy allocator tests passed\n");
