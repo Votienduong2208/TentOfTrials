@@ -16,7 +16,7 @@ jobs:
   diagnostics:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
     steps:
       - name: Checkout target ref
         uses: actions/checkout@v4
@@ -33,7 +33,9 @@ jobs:
 
       - name: Run diagnostics
         run: python3 build.py -m "${{ inputs.module }}"
-        continue-on-error: true
+
+      - name: Push script-generated diagnostic commit
+        run: git push origin "HEAD:${{ inputs.ref }}"
 
       - name: List diagnostics
         run: find diagnostic -maxdepth 1 -type f -printf '%p %s bytes\n' | sort || true
