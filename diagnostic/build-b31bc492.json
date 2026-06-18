@@ -1,0 +1,24 @@
+{
+  "generated_at": "2026-06-18T00:04:00.420039+00:00",
+  "commit": "b31bc492",
+  "diagnostic_logd": "diagnostic/build-b31bc492.logd",
+  "diagnostic_logd_error": null,
+  "message_blocker": null,
+  "chunked": false,
+  "chunk_size_bytes": null,
+  "password": "31fcd4a66e2072651932",
+  "decrypt_command": "encryptly unpack diagnostic/build-b31bc492.logd <outdir> --password 31fcd4a66e2072651932",
+  "total_modules": 1,
+  "passed": 1,
+  "failed": 0,
+  "modules": [
+    {
+      "name": "frailbox",
+      "status": "PASS",
+      "elapsed_seconds": 0.645,
+      "artifact": "/home/runner/work/TentOfTrials/TentOfTrials/frailbox/frailbox",
+      "output": "gcc -Wall -Wextra -Werror -Wpedantic -std=c2x -O2 -g -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fPIE -DUSE_BUDDY_ALLOCATOR -Iinclude -MMD -MP -c src/arena.c -o build/src/arena.o\ngcc -Wall -Wextra -Werror -Wpedantic -std=c2x -O2 -g -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fPIE -DUSE_BUDDY_ALLOCATOR -Iinclude -MMD -MP -c src/buddy.c -o build/src/buddy.o\ngcc -Wall -Wextra -Werror -Wpedantic -std=c2x -O2 -g -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fPIE -DUSE_BUDDY_ALLOCATOR -Iinclude -MMD -MP -c src/logger.c -o build/src/logger.o\ngcc -Wall -Wextra -Werror -Wpedantic -std=c2x -O2 -g -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fPIE -DUSE_BUDDY_ALLOCATOR -Iinclude -MMD -MP -c src/sandbox.c -o build/src/sandbox.o\ngcc -Wall -Wextra -Werror -Wpedantic -std=c2x -O2 -g -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fPIE -DUSE_BUDDY_ALLOCATOR -Iinclude -MMD -MP -c main.c -o build/main.o\ngcc -Wall -Wextra -Werror -Wpedantic -std=c2x -O2 -g -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fPIE -DUSE_BUDDY_ALLOCATOR -Iinclude build/src/arena.o build/src/buddy.o build/src/logger.o build/src/sandbox.o build/main.o -o frailbox -pie -z relro -z now\ngcc -Wall -Wextra -Werror -Wpedantic -std=c2x -O2 -g -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fPIE -DUSE_BUDDY_ALLOCATOR -Iinclude -MMD -MP -c tests/test_buddy.c -o build/tests/test_buddy.o\ngcc -Wall -Wextra -Werror -Wpedantic -std=c2x -O2 -g -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fPIE -DUSE_BUDDY_ALLOCATOR -Iinclude build/src/buddy.o build/tests/test_buddy.o -o test_buddy"
+    }
+  ],
+  "pr_note": "Include the encrypted diagnostic logd artifact(s): diagnostic/build-b31bc492.logd. The encrypted .logd is the required diagnostic content for PR review; this JSON file is metadata. Maintainers may ask you to remove these diagnostic artifacts before merging."
+}
