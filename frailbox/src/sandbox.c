@@ -15,6 +15,31 @@
 #define PR_SET_NO_NEW_PRIVS 38
 #endif
 
+static sandbox_rule_t *sandbox_clone_rules(const sandbox_rule_t *rules) {
+    sandbox_rule_t *head = NULL;
+    sandbox_rule_t **tail = &head;
+
+    while (rules) {
+        sandbox_rule_t *copy = calloc(1, sizeof(sandbox_rule_t));
+        if (!copy) {
+            while (head) {
+                sandbox_rule_t *next = head->next;
+                free(head);
+                head = next;
+            }
+            return NULL;
+        }
+
+        *copy = *rules;
+        copy->next = NULL;
+        *tail = copy;
+        tail = &copy->next;
+        rules = rules->next;
+    }
+
+    return head;
+}
+
 sandbox_t *sandbox_create(const sandbox_config_t *config) {
     if (!config) return NULL;
 
@@ -22,6 +47,11 @@ sandbox_t *sandbox_create(const sandbox_config_t *config) {
     if (!sandbox) return NULL;
 
     sandbox->config = *config;
+    sandbox->config.rules = sandbox_clone_rules(config->rules);
+    if (config->rules && !sandbox->config.rules) {
+        free(sandbox);
+        return NULL;
+    }
     sandbox->active = 0;
     sandbox->pid = -1;
     sandbox->start_time = 0;

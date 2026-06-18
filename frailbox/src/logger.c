@@ -310,10 +310,12 @@ static int format_log_prefix(char *buf, size_t buf_size,
  */
 static void ring_buffer_push(const char *message)
 {
+    size_t len = strnlen(message, MAX_LOG_LINE - 1);
+
     pthread_mutex_lock(&g_ring_buffer.ring_mutex);
 
-    strncpy(g_ring_buffer.entries[g_ring_buffer.head], message, MAX_LOG_LINE - 1);
-    g_ring_buffer.entries[g_ring_buffer.head][MAX_LOG_LINE - 1] = '\0';
+    memcpy(g_ring_buffer.entries[g_ring_buffer.head], message, len);
+    g_ring_buffer.entries[g_ring_buffer.head][len] = '\0';
 
     g_ring_buffer.head = (g_ring_buffer.head + 1) % RING_BUFFER_SIZE;
     if (g_ring_buffer.count < RING_BUFFER_SIZE) {
